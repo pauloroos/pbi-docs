@@ -1,6 +1,6 @@
-![GitHub Repo stars](https://img.shields.io/github/stars/alisonpezzott/pbi-docs)
-![GitHub forks](https://img.shields.io/github/forks/alisonpezzott/pbi-docs)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/alisonpezzott/pbi-docs/blob/main/LICENSE) 
+![GitHub Repo stars](https://img.shields.io/github/stars/alisonpezzott/pbi-docs?style=flat&color=yellow&link=https%3A%2F%2Fgithub.com%2Falisonpezzott%2Fpbi-docs%2Fblob%2Fmain%2F)
+![GitHub forks](https://img.shields.io/github/forks/alisonpezzott/pbi-docs?style=flat&color=blue&link=https%3A%2F%2Fgithub.com%2Falisonpezzott%2Fpbi-docs%2Fedit%2Fmain%2F)
+[![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://github.com/alisonpezzott/pbi-docs/blob/main/LICENSE) 
 
 
 # PBI-DOCS  
