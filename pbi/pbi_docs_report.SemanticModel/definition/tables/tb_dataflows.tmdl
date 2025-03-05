@@ -1,0 +1,78 @@
+table tb_dataflows
+	lineageTag: 2e71ebfb-d926-4096-8043-c0f2daf4e310
+
+	column workspace
+		dataType: string
+		lineageTag: 63353ffd-a01d-4dc3-ac39-e9c2a58320b0
+		summarizeBy: none
+		sourceColumn: workspace
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspaceId
+		dataType: string
+		lineageTag: 1a28bb41-664f-4ba8-8cd2-c05ac5998e50
+		summarizeBy: none
+		sourceColumn: workspaceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column objectId
+		dataType: string
+		lineageTag: 5639d8d8-a5dd-4fc1-9284-6a722b123a62
+		summarizeBy: none
+		sourceColumn: objectId
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 9fdeb42d-df47-46b8-a18f-fab9a593bc47
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column description
+		dataType: string
+		lineageTag: 7791e83d-4301-4e35-b2b0-cd9e8a209c90
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = Automatic
+
+	column configuredBy
+		dataType: string
+		lineageTag: eee3315c-5eae-44ba-9f95-3c38e8523148
+		summarizeBy: none
+		sourceColumn: configuredBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column generation
+		dataType: string
+		lineageTag: 164cf8e8-368e-4b0c-9429-114f7bb6658d
+		summarizeBy: none
+		sourceColumn: generation
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_dataflows = m
+		mode: import
+		queryGroup: 'TENANT ITEMS'
+		source =
+				let
+				    Source = tenant_items{[Name="dataflows.json"]}[Content],
+				    #"Imported JSON" = Json.Document(Source,1252),
+				    #"Record Field Names" = List.Distinct(List.Combine(List.Transform(#"Imported JSON", each Record.FieldNames(_)))),
+				    #"Table from List" = Table.FromList(#"Imported JSON", Splitter.SplitByNothing(), type table[Record = record]),
+				    #"Expanded Record" = Table.ExpandRecordColumn(#"Table from List", "Record", #"Record Field Names"),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Record",{"users"}),
+				    #"All Columns to Text" = Table.TransformColumns(#"Removed Columns", {}, Text.From)
+				in
+				    #"All Columns to Text"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

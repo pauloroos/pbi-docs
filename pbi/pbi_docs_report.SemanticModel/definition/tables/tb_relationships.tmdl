@@ -1,0 +1,114 @@
+table tb_relationships
+	lineageTag: 3c7bf4f9-099b-4db4-a6c1-c4f337a8b3aa
+
+	column from
+		dataType: string
+		lineageTag: 574ce113-0242-48da-9c3e-c4e0121dd338
+		summarizeBy: none
+		sourceColumn: from
+
+		annotation SummarizationSetBy = Automatic
+
+	column fromCardinality
+		dataType: string
+		lineageTag: 2b509289-0e8c-4612-8d11-86821ce6fe61
+		summarizeBy: none
+		sourceColumn: fromCardinality
+
+		annotation SummarizationSetBy = Automatic
+
+	column to
+		dataType: string
+		lineageTag: 4d888019-4dc7-46d4-acd6-c790185090a2
+		summarizeBy: none
+		sourceColumn: to
+
+		annotation SummarizationSetBy = Automatic
+
+	column toCardinality
+		dataType: string
+		lineageTag: 0dccaedf-40fd-4e19-accb-915383c5735d
+		summarizeBy: none
+		sourceColumn: toCardinality
+
+		annotation SummarizationSetBy = Automatic
+
+	column isActive
+		dataType: string
+		lineageTag: 6f5b15b2-b8bb-469e-8db5-f985eba4ff8b
+		summarizeBy: none
+		sourceColumn: isActive
+
+		annotation SummarizationSetBy = Automatic
+
+	column isBidirectional
+		dataType: string
+		lineageTag: a65c1c17-4594-404c-9297-53eecedd8827
+		summarizeBy: none
+		sourceColumn: isBidirectional
+
+		annotation SummarizationSetBy = Automatic
+
+	column relationship
+		dataType: string
+		lineageTag: 1d654b7b-7fac-41bc-8326-903897a9730a
+		summarizeBy: none
+		sourceColumn: relationship
+
+		annotation SummarizationSetBy = Automatic
+
+	column columnKeyFrom
+		dataType: string
+		lineageTag: 3e8ef79b-60ee-4bf1-aa3c-274e1528e877
+		summarizeBy: none
+		sourceColumn: columnKeyFrom
+
+		annotation SummarizationSetBy = Automatic
+
+	column columnKeyTo
+		dataType: string
+		lineageTag: d19ecd16-d955-43ce-942b-ceab43c7bab2
+		summarizeBy: none
+		sourceColumn: columnKeyTo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_relationships = m
+		mode: import
+		queryGroup: 'PBI DOC'
+		source = ```
+				let
+				    Source = Table.SelectRows(pbi_docs, each [Name] = "relationships.csv")[[workspaceName], [reportName], [Content]],
+				    #"Csv to Table" = Table.TransformColumns(Source, {{"Content", each Table.PromoteHeaders(Csv.Document(_,[Delimiter=";", Encoding=1252]))}}),
+				    #"Expanded Content" = Table.ExpandTableColumn(#"Csv to Table", "Content", Table.ColumnNames(#"Csv to Table"[Content]{0})),
+				    #"Filtered Empty Rows" = Table.SelectRows(#"Expanded Content", each [from] <> null and [from] <> ""),
+				    #"All Columns to Text" = Table.TransformColumns(#"Filtered Empty Rows", {}, Text.From),
+				    #"Merged Queries" = Table.NestedJoin(#"All Columns to Text", {"workspaceName", "reportName"}, tb_reports, {"workspace", "name"}, "tb_reports", JoinKind.LeftOuter),
+				    #"Expanded tb_reports" = Table.ExpandTableColumn(#"Merged Queries", "tb_reports", {"datasetId"}, {"datasetId"}),
+				    #"Add columnKeyFrom" = Table.AddColumn(
+				        #"Expanded tb_reports", 
+				        "columnKeyFrom", each let
+				            __table = Text.BetweenDelimiters([from], "'", "'"),
+				            __column = Text.BetweenDelimiters([from], "[", "]")
+				        in
+				            [datasetId] & "|" & __table & "|" & __column, 
+				        type text
+				    ),
+				    #"Add columnKeyTo" = Table.AddColumn(
+				        #"Add columnKeyFrom", 
+				        "columnKeyTo", each let
+				            __table = Text.BetweenDelimiters([to], "'", "'"),
+				            __column = Text.BetweenDelimiters([to], "[", "]")
+				        in
+				            [datasetId] & "|" & __table & "|" & __column, 
+				        type text
+				    ),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Add columnKeyTo",{"columnKeyFrom", "from", "fromCardinality", "columnKeyTo", "to", "toCardinality", "relationship", "isActive", "isBidirectional"})
+				in
+				    #"Removed Other Columns"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

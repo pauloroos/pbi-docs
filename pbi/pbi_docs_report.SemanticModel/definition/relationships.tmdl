@@ -1,0 +1,41 @@
+relationship AutoDetected_f47eb204-347a-4b10-998e-b0e61ca02b22
+	fromColumn: tb_datasets.workspaceId
+	toColumn: tb_workspaces.workspaceId
+
+relationship fb36c4e5-4bc9-3015-bdf5-686dd87358e1
+	fromColumn: tb_reports.datasetId
+	toColumn: tb_datasets.id
+
+relationship a35b1410-934b-8e0f-e307-2162463ebcac
+	fromColumn: tb_dataflows.workspaceId
+	toColumn: tb_workspaces.workspaceId
+
+relationship AutoDetected_b99a5ddf-1c79-45b5-9390-2b577a6c0c6f
+	fromColumn: tb_columns.tableKey
+	toColumn: tb_tables.tableKey
+
+relationship 31a8bc30-564b-3e81-35ae-3ceb8ec26557
+	fromColumn: tb_tables.datasetId
+	toColumn: tb_datasets.id
+
+relationship AutoDetected_3c173e84-7967-44d1-89b4-0c887c2ad246
+	fromColumn: tb_measures.tableKey
+	toColumn: tb_tables.tableKey
+
+relationship AutoDetected_ffc89d29-5314-4a08-b067-1362fefc4c82
+	fromColumn: tb_calculation_groups.tableKey
+	toColumn: tb_tables.tableKey
+
+relationship 3bca5d98-bc2f-8bb5-d2ce-eca9a95860d3
+	fromColumn: tb_parameters.datasetId
+	toColumn: tb_datasets.id
+
+relationship 350063d8-29c8-0380-b561-84d889e1f652
+	fromColumn: tb_relationships.columnKeyFrom
+	toColumn: tb_columns.columnKey
+
+relationship 421b02bf-72d8-5b13-fe40-f649f1435d66
+	isActive: false
+	fromColumn: tb_relationships.columnKeyTo
+	toColumn: tb_columns.columnKey
+

@@ -1,0 +1,90 @@
+table tb_tables
+	lineageTag: 7f07fb61-d7a3-459d-b1a2-f90130ddb694
+
+	column tableKey
+		dataType: string
+		lineageTag: 230edc6f-9a43-41e6-87dd-39365a1b01d8
+		summarizeBy: none
+		sourceColumn: tableKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column tableName
+		dataType: string
+		lineageTag: 72b4643b-4793-4a41-a698-9dfcd5c8b740
+		summarizeBy: none
+		sourceColumn: tableName
+
+		annotation SummarizationSetBy = Automatic
+
+	column datasetId
+		dataType: string
+		lineageTag: e5369b4c-7bf6-42c4-aa2b-6bda6b234a8f
+		summarizeBy: none
+		sourceColumn: datasetId
+
+		annotation SummarizationSetBy = Automatic
+
+	column queryDefinition
+		dataType: string
+		lineageTag: 95664a4f-dd12-412f-99c2-3ab24bb67e54
+		summarizeBy: none
+		sourceColumn: queryDefinition
+
+		annotation SummarizationSetBy = Automatic
+
+	column modifiedTime
+		dataType: string
+		lineageTag: ddc41226-3159-4dc9-b883-859e62c3e989
+		summarizeBy: none
+		sourceColumn: modifiedTime
+
+		annotation SummarizationSetBy = Automatic
+
+	column refreshedTime
+		dataType: string
+		lineageTag: 44143429-a80b-4e86-a40d-ad26420323d3
+		summarizeBy: none
+		sourceColumn: refreshedTime
+
+		annotation SummarizationSetBy = Automatic
+
+	column description
+		dataType: string
+		lineageTag: dc36c292-d430-4ec6-bfad-977cdab6585e
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: fb3e5077-6ada-4b59-82ef-9ff6ad69393b
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_tables = m
+		mode: import
+		queryGroup: 'PBI DOC'
+		source =
+				let
+				    Source = Table.SelectRows(pbi_docs, each [Name] = "columns.csv")[[workspaceName], [reportName], [Content]],
+				    #"Csv to Table" = Table.TransformColumns(Source, {{"Content", each Table.PromoteHeaders(Csv.Document(_,[Delimiter=";", Encoding=1252]))}}),
+				    #"Expanded Content" = Table.ExpandTableColumn(#"Csv to Table", "Content", Table.ColumnNames(#"Csv to Table"[Content]{0})),
+				    #"All Columns to Text" = Table.TransformColumns(#"Expanded Content", {}, Text.From),
+				    #"Merged Queries" = Table.NestedJoin(#"All Columns to Text", {"workspaceName", "reportName"}, tb_reports, {"workspace", "name"}, "tb_reports", JoinKind.LeftOuter),
+				    #"Expanded tb_reports" = Table.ExpandTableColumn(#"Merged Queries", "tb_reports", {"datasetId"}, {"datasetId"}),
+				    #"Inserted tableKey" = Table.AddColumn(#"Expanded tb_reports", "tableKey", each Text.Combine({[datasetId], [tableName]}, "|"), type text),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Inserted tableKey",{"tableKey", "tableName", "datasetId"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"tableKey"}),
+				    #"Merged tb_partitions" = Table.NestedJoin(#"Removed Duplicates", {"tableKey"}, tb_partitions, {"tableKey"}, "tb_partitions", JoinKind.LeftOuter),
+				    #"Expanded tb_partitions" = Table.ExpandTableColumn(#"Merged tb_partitions", "tb_partitions", {"queryDefinition", "modifiedTime", "refreshedTime", "description", "type"}, {"queryDefinition", "modifiedTime", "refreshedTime", "description", "type"})
+				in
+				    #"Expanded tb_partitions"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

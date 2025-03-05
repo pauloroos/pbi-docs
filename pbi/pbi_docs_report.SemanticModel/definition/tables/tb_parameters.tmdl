@@ -1,0 +1,47 @@
+table tb_parameters
+	lineageTag: a8e6d546-091d-46c9-8e00-3cfa7034fc0d
+
+	column name
+		dataType: string
+		lineageTag: 202fcd0b-2f89-41b6-b6d7-626439da319a
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column expression
+		dataType: string
+		lineageTag: f043f515-33dc-40f4-bf36-faf7d47a6183
+		summarizeBy: none
+		sourceColumn: expression
+
+		annotation SummarizationSetBy = Automatic
+
+	column datasetId
+		dataType: string
+		lineageTag: 63f24eaf-6ae7-4de6-a2e9-e9e3e08126b8
+		summarizeBy: none
+		sourceColumn: datasetId
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_parameters = m
+		mode: import
+		queryGroup: 'PBI DOC'
+		source =
+				let
+				    Source = Table.SelectRows(pbi_docs, each [Name] = "parameters.csv")[[workspaceName], [reportName], [Content]],
+				    #"Csv to Table" = Table.TransformColumns(Source, {{"Content", each Table.PromoteHeaders(Csv.Document(_,[Delimiter=";", Encoding=1252]))}}),
+				    #"Expanded Content" = Table.ExpandTableColumn(#"Csv to Table", "Content", Table.ColumnNames(#"Csv to Table"[Content]{0})),
+				    #"Filtered Empty Rows" = Table.SelectRows(#"Expanded Content", each [name] <> null and [name] <> ""),
+				    #"All Columns to Text" = Table.TransformColumns(#"Filtered Empty Rows", {}, Text.From),
+				    #"Merged Queries" = Table.NestedJoin(#"All Columns to Text", {"workspaceName", "reportName"}, tb_reports, {"workspace", "name"}, "tb_reports", JoinKind.LeftOuter),
+				    #"Expanded tb_reports" = Table.ExpandTableColumn(#"Merged Queries", "tb_reports", {"datasetId"}, {"datasetId"}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Expanded tb_reports",{"datasetId", "expression", "name"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

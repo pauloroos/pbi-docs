@@ -1,0 +1,71 @@
+expression results_path = "C:\Git\pbi-docs\results" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 5ba0990c-d446-4fb4-b815-100d6accb558
+	queryGroup: PARAMETERS
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression pbi_docs = ```
+		let
+		    Source = Folder.Files(results_path & "\datasets_info"),
+		    #"Removed Other Columns" = Table.SelectColumns(Source,{"Content", "Name", "Folder Path"}),
+		    #"Extract Workspace and Report" = Table.TransformColumns ( 
+		        #"Removed Other Columns", {
+		            {
+		                "Folder Path", 
+		                each let string = Text.AfterDelimiter(_, "datasets_info\"),
+		                    splitted_str = Text.Split(string, "\"),
+		                    record_output =
+		                    [
+		                        workspaceName =  splitted_str{0},
+		                        reportName = splitted_str{1}
+		                    ]
+		                in 
+		                    record_output,
+		                type [ workspaceName=text, reportName=text ] 
+		            }
+		        } 
+		    ),
+		    #"Expanded Folder Path" = Table.ExpandRecordColumn(#"Extract Workspace and Report", "Folder Path", {"workspaceName", "reportName"})
+		in
+		    #"Expanded Folder Path"
+		```
+	lineageTag: 1f144965-eefe-44aa-96dd-8a5100b4bc7b
+	queryGroup: 'PBI DOC'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression tenant_items =
+		let
+		    Source = Folder.Files(results_path & "\tenant_metadata")
+		in
+		    Source
+	lineageTag: 40310656-72c7-4e97-89bf-83fa5d379e84
+	queryGroup: 'TENANT ITEMS'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression tb_partitions =
+		let
+		    Source = Table.SelectRows(pbi_docs, each [Name] = "partitions.csv")[[workspaceName], [reportName], [Content]],
+		    #"Csv to Table" = Table.TransformColumns(Source, {{"Content", each Table.PromoteHeaders(Csv.Document(_,[Delimiter=";", Encoding=1252]))}}),
+		    #"Expanded Content" = Table.ExpandTableColumn(#"Csv to Table", "Content", Table.ColumnNames(#"Csv to Table"[Content]{0})),
+		    #"All Columns to Text" = Table.TransformColumns(#"Expanded Content", {}, Text.From),
+		    #"Merged Queries" = Table.NestedJoin(#"All Columns to Text", {"workspaceName", "reportName"}, tb_reports, {"workspace", "name"}, "tb_reports", JoinKind.LeftOuter),
+		    #"Expanded tb_reports" = Table.ExpandTableColumn(#"Merged Queries", "tb_reports", {"datasetId"}, {"datasetId"}),
+		    #"Inserted tableKey" = Table.AddColumn(#"Expanded tb_reports", "tableKey", each Text.Combine({[datasetId], [tableName]}, "|"), type text),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Inserted tableKey",{"tableKey", "queryDefinition", "modifiedTime", "refreshedTime", "description", "type"})
+		in
+		    #"Removed Other Columns"
+	lineageTag: 14fdbe68-881b-45d6-b8b7-c9659509b74a
+	queryGroup: 'PBI DOC'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

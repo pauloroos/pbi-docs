@@ -1,0 +1,79 @@
+table calculations
+	lineageTag: 5043973f-a361-431b-8678-1343ace7f681
+
+	measure '# Workspaces' = ```
+			COUNTROWS('tb_workspaces') 
+			```
+		formatString: 0
+		lineageTag: 0d77f56f-9058-44ee-8cac-2759750d2524
+
+	measure '# Datasets' = ```
+			COUNTROWS('tb_datasets') 
+			```
+		formatString: 0
+		lineageTag: 15cb40f1-fde7-4e40-8a28-d9bf6aff0989
+
+	measure '# Reports' = ```
+			COUNTROWS('tb_reports') 
+			```
+		formatString: 0
+		lineageTag: 060ed833-b00d-4741-97ec-79b997e517ac
+
+	measure '# Tables' = ```
+			COUNTROWS('tb_tables') 
+			```
+		formatString: 0
+		lineageTag: dbd5eca3-45f8-4fb5-90ca-8cf105c3ce4d
+
+	measure '# Measures' = ```
+			COUNTROWS('tb_measures') 
+			```
+		formatString: #,0
+		lineageTag: 0c00679e-eb9f-4b0c-a2b1-29a6bd262e2b
+
+	measure '# Columns' = ```
+			COUNTROWS('tb_columns') 
+			```
+		formatString: 0
+		lineageTag: 9a0a070a-b8d9-4fd6-b7ea-e7903640e84c
+
+	measure '# Relationships' = ```
+			COUNTROWS('tb_relationships') 
+			```
+		formatString: 0
+		lineageTag: dc080e81-d719-4d00-ba6a-69aeae9c50dd
+
+	measure '# Calculation Groups' = ```
+			COUNTROWS('tb_calculation_groups') 
+			```
+		formatString: 0
+		lineageTag: 63570236-a93d-420f-9ef0-074215e3ebc2
+
+	measure '# Parameters' = ```
+			COUNTROWS('tb_parameters') 
+			```
+		formatString: 0
+		lineageTag: dc133445-0945-44c8-8e27-e0d336e39963
+
+	measure '# Dataflows' = COUNTROWS('tb_dataflows')
+		formatString: 0
+		lineageTag: fa749819-2368-479e-871c-c4c5abbfe481
+
+	column Value
+		isHidden
+		formatString: 0
+		lineageTag: df408fcb-4bd3-454b-aeb0-f86eb8db34a1
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition calculations = calculated
+		mode: import
+		source = ```
+				{0} 
+				```
+
+	annotation PBI_Id = 1c09fd70475a4529bd30b3b1a035d820
+
