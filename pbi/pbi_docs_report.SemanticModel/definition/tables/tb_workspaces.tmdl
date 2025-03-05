@@ -1,0 +1,85 @@
+table tb_workspaces
+	lineageTag: d5036c1a-cb13-4459-b504-dde094e0ac7f
+
+	column workspaceId
+		dataType: string
+		lineageTag: 813b7fb5-aaf5-4765-811b-ba6b2cd5aa70
+		summarizeBy: none
+		sourceColumn: workspaceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: string
+		lineageTag: 45ef386c-6978-44ad-b247-35b9e68afab9
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column isReadOnly
+		dataType: string
+		lineageTag: a799af02-f7c4-4040-811f-2b5b94d58f19
+		summarizeBy: none
+		sourceColumn: isReadOnly
+
+		annotation SummarizationSetBy = Automatic
+
+	column isOnDedicatedCapacity
+		dataType: string
+		lineageTag: 0da92c72-1675-4cf8-a0e8-f6acc2369549
+		summarizeBy: none
+		sourceColumn: isOnDedicatedCapacity
+
+		annotation SummarizationSetBy = Automatic
+
+	column capacityId
+		dataType: string
+		lineageTag: 14d7b517-1f30-4e60-ab39-d9e9d79f87f0
+		summarizeBy: none
+		sourceColumn: capacityId
+
+		annotation SummarizationSetBy = Automatic
+
+	column defaultDatasetStorageFormat
+		dataType: string
+		lineageTag: 19b4865b-1895-4308-bb80-de18e0a0d55d
+		summarizeBy: none
+		sourceColumn: defaultDatasetStorageFormat
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: 552576fc-a652-48a1-bbe2-343064aa6698
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 521b45b1-7f14-4cfb-bf3a-b7fc28517db2
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_workspaces = m
+		mode: import
+		queryGroup: 'TENANT ITEMS'
+		source =
+				let
+				    Source = tenant_items{[Name="workspaces.json"]}[Content],
+				    #"Imported JSON" = Json.Document(Source,1252),
+				    #"Record Field Names" = List.Distinct(List.Combine(List.Transform(#"Imported JSON", each Record.FieldNames(_)))),
+				    #"Table from List" = Table.FromList(#"Imported JSON", Splitter.SplitByNothing(), type table[Record = record]),
+				    #"Expanded Record" = Table.ExpandRecordColumn(#"Table from List", "Record", #"Record Field Names"),
+				    #"All Columns to Text" = Table.TransformColumns(#"Expanded Record", {}, Text.From)
+				in
+				    #"All Columns to Text"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

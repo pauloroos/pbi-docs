@@ -1,0 +1,144 @@
+table tb_datasets
+	lineageTag: e09d916a-7710-4871-8a31-65a1fa50b0e1
+
+	column workspace
+		dataType: string
+		lineageTag: dd442011-ad4b-45db-94a3-8e6dde71cdd1
+		summarizeBy: none
+		sourceColumn: workspace
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspaceId
+		dataType: string
+		lineageTag: cba50b4b-a664-4f8e-a277-bbff72de680a
+		summarizeBy: none
+		sourceColumn: workspaceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: string
+		lineageTag: d0a6f983-18ae-4a13-af2e-d53eb3e96097
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: a133be41-1458-4383-adcb-876df54ccf30
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column webUrl
+		dataType: string
+		lineageTag: 049240a0-5ed7-4fd4-b92e-6a6f5f5c1e79
+		dataCategory: WebUrl
+		summarizeBy: none
+		sourceColumn: webUrl
+
+		annotation SummarizationSetBy = Automatic
+
+	column addRowsAPIEnabled
+		dataType: string
+		lineageTag: 0fe1a1cd-7f3c-4fc2-93ba-aa9d155c4461
+		summarizeBy: none
+		sourceColumn: addRowsAPIEnabled
+
+		annotation SummarizationSetBy = Automatic
+
+	column configuredBy
+		dataType: string
+		lineageTag: 30299c06-ea1d-487c-8b05-fddcd00ea279
+		summarizeBy: none
+		sourceColumn: configuredBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column isRefreshable
+		dataType: string
+		lineageTag: b73f3846-f75e-42bb-9388-aa9053bc75c7
+		summarizeBy: none
+		sourceColumn: isRefreshable
+
+		annotation SummarizationSetBy = Automatic
+
+	column isEffectiveIdentityRequired
+		dataType: string
+		lineageTag: 0f206316-f3bb-406f-8921-51e5f8c61c05
+		summarizeBy: none
+		sourceColumn: isEffectiveIdentityRequired
+
+		annotation SummarizationSetBy = Automatic
+
+	column isEffectiveIdentityRolesRequired
+		dataType: string
+		lineageTag: 9b92cc89-acd4-4563-a0a4-e6b23a7e5103
+		summarizeBy: none
+		sourceColumn: isEffectiveIdentityRolesRequired
+
+		annotation SummarizationSetBy = Automatic
+
+	column isOnPremGatewayRequired
+		dataType: string
+		lineageTag: 8a081ae4-3e76-4cfd-9a10-1883ccb587a7
+		summarizeBy: none
+		sourceColumn: isOnPremGatewayRequired
+
+		annotation SummarizationSetBy = Automatic
+
+	column targetStorageMode
+		dataType: string
+		lineageTag: 616e8339-1337-494b-8e0a-b0f66a34abd9
+		summarizeBy: none
+		sourceColumn: targetStorageMode
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdDate
+		dataType: string
+		lineageTag: 454c8726-7f00-465d-954e-a59fe6c46a1f
+		summarizeBy: none
+		sourceColumn: createdDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column createReportEmbedURL
+		dataType: string
+		lineageTag: 63af61d1-89bd-461d-bfff-eba67492ace0
+		summarizeBy: none
+		sourceColumn: createReportEmbedURL
+
+		annotation SummarizationSetBy = Automatic
+
+	column qnaEmbedURL
+		dataType: string
+		lineageTag: e1283496-7b4e-4148-b12b-13413d603709
+		dataCategory: WebUrl
+		summarizeBy: none
+		sourceColumn: qnaEmbedURL
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_datasets = m
+		mode: import
+		queryGroup: 'TENANT ITEMS'
+		source =
+				let
+				    Source = tenant_items{[Name="datasets.json"]}[Content],
+				    #"Imported JSON" = Json.Document(Source,1252),
+				    #"Record Field Names" = List.Distinct(List.Combine(List.Transform(#"Imported JSON", each Record.FieldNames(_)))),
+				    #"Table from List" = Table.FromList(#"Imported JSON", Splitter.SplitByNothing(), type table[Record = record]),
+				    #"Expanded Record" = Table.ExpandRecordColumn(#"Table from List", "Record", #"Record Field Names"),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Record",{"upstreamDatasets", "users", "queryScaleOutSettings"}),
+				    #"All Columns to Text" = Table.TransformColumns(#"Removed Columns", {}, Text.From)
+				in
+				    #"All Columns to Text"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

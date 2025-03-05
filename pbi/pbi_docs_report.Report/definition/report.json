@@ -1,0 +1,108 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/1.2.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "reportVersionAtImport": "5.61",
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "based_github_nordtheme4437925164249339.json",
+      "reportVersionAtImport": "5.61",
+      "type": "RegisteredResources"
+    }
+  },
+  "layoutOptimization": "None",
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY24SU10",
+          "path": "BaseThemes/CY24SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "FOLLOW8075062004306031.png",
+          "path": "FOLLOW8075062004306031.png",
+          "type": "Image"
+        },
+        {
+          "name": "SUBSCRIBE5631492287112956.png",
+          "path": "SUBSCRIBE5631492287112956.png",
+          "type": "Image"
+        },
+        {
+          "name": "arrow-back-outline20685952479150815.png",
+          "path": "arrow-back-outline20685952479150815.png",
+          "type": "Image"
+        },
+        {
+          "name": "avatar4335197479031512.png",
+          "path": "avatar4335197479031512.png",
+          "type": "Image"
+        },
+        {
+          "name": "based_github_nordtheme4437925164249339.json",
+          "path": "based_github_nordtheme4437925164249339.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "reorder-three6847583046881216.png",
+          "path": "reorder-three6847583046881216.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "filterPaneHiddenInEditMode": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

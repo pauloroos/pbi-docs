@@ -1,0 +1,96 @@
+table tb_columns
+	lineageTag: 74737bfd-1eae-4a6d-b9ca-581046af28c1
+
+	column name
+		dataType: string
+		lineageTag: 401fa889-eb09-45b2-9a07-c87b7f3eb66e
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column column
+		dataType: string
+		lineageTag: cd2e0c90-a392-4617-a419-13ca98edfcc0
+		summarizeBy: none
+		sourceColumn: column
+
+		annotation SummarizationSetBy = Automatic
+
+	column sortedBy
+		dataType: string
+		lineageTag: 1fa79e81-6a23-4203-8f87-ac4dad78be79
+		summarizeBy: none
+		sourceColumn: sortedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column format
+		dataType: string
+		lineageTag: d0f48ebe-d0c4-4f38-9b62-97e63b936a04
+		summarizeBy: none
+		sourceColumn: format
+
+		annotation SummarizationSetBy = Automatic
+
+	column displayFolder
+		dataType: string
+		lineageTag: 2a8880d4-3079-400b-a290-9c492a7bab10
+		summarizeBy: none
+		sourceColumn: displayFolder
+
+		annotation SummarizationSetBy = Automatic
+
+	column isHidden
+		dataType: string
+		lineageTag: d765b3a0-51ba-4766-91d1-e048bf0107e1
+		summarizeBy: none
+		sourceColumn: isHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column expression
+		dataType: string
+		lineageTag: e79dd093-fc46-4a86-8b6a-4b29904af20e
+		summarizeBy: none
+		sourceColumn: expression
+
+		annotation SummarizationSetBy = Automatic
+
+	column tableKey
+		dataType: string
+		lineageTag: cc99159d-bd4a-41ff-89b5-70110f46f3d7
+		summarizeBy: none
+		sourceColumn: tableKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column columnKey
+		dataType: string
+		lineageTag: ade1a004-c85c-411b-bcd8-50fef72af30e
+		summarizeBy: none
+		sourceColumn: columnKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_columns = m
+		mode: import
+		queryGroup: 'PBI DOC'
+		source =
+				let
+				    Source = Table.SelectRows(pbi_docs, each [Name] = "columns.csv")[[workspaceName], [reportName], [Content]],
+				    #"Csv to Table" = Table.TransformColumns(Source, {{"Content", each Table.PromoteHeaders(Csv.Document(_,[Delimiter=";", Encoding=1252]))}}),
+				    #"Expanded Content" = Table.ExpandTableColumn(#"Csv to Table", "Content", Table.ColumnNames(#"Csv to Table"[Content]{0})),
+				    #"All Columns to Text" = Table.TransformColumns(#"Expanded Content", {}, Text.From),
+				    #"Merged Queries" = Table.NestedJoin(#"All Columns to Text", {"workspaceName", "reportName"}, tb_reports, {"workspace", "name"}, "tb_reports", JoinKind.LeftOuter),
+				    #"Expanded tb_reports" = Table.ExpandTableColumn(#"Merged Queries", "tb_reports", {"datasetId"}, {"datasetId"}),
+				    #"Inserted tableKey" = Table.AddColumn(#"Expanded tb_reports", "tableKey", each Text.Combine({[datasetId], [tableName]}, "|"), type text),
+				    #"Inserted columnKey" = Table.AddColumn(#"Inserted tableKey", "columnKey", each Text.Combine({[tableKey], [name]}, "|"), type text),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Inserted columnKey",{"tableKey", "columnKey", "column", "name", "sortedBy", "format", "displayFolder", "isHidden", "expression"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

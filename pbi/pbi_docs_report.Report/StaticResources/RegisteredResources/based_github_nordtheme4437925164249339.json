@@ -1,0 +1,135 @@
+{
+  "name": "based_github_nordtheme",
+  "dataColors": [
+    "#6C81A8",
+    "#8CA0BE",
+    "#9BBFCE",
+    "#9DBBBA",
+    "#BF8A74",
+    "#AB90AB",
+    "#505668",
+    "#DADEE8",
+    "#3599B8",
+    "#DFBFBF",
+    "#4AC5BB",
+    "#5F6B6D",
+    "#FB8281",
+    "#F4D25A",
+    "#7F898A",
+    "#A4DDEE",
+    "#FDAB89",
+    "#B687AC",
+    "#28738A",
+    "#A78F8F",
+    "#168980",
+    "#293537",
+    "#BB4A4A",
+    "#B59525",
+    "#475052",
+    "#6A9FB0",
+    "#BD7150",
+    "#7B4F71",
+    "#1B4D5C",
+    "#706060",
+    "#0F5C55",
+    "#1C2325"
+  ],
+  "bad": "#AB666C",
+  "neutral": "#E1CC93",
+  "good": "#AABD91",
+  "minimum": "#E6E9EF",
+  "center": "#505668",
+  "maximum": "#3E4251",
+  "textClasses": {
+    "label": {
+      "color": "#30343F",
+      "fontFace": "wf_standard-font, helvetica, arial, sans-serif"
+    },
+    "callout": {
+      "color": "#30343F",
+      "fontSize": 24
+    },
+    "title": {
+      "color": "#505668",
+      "fontSize": 8
+    },
+    "header": {
+      "color": "#464C5C",
+      "fontFace": "wf_standard-font, helvetica, arial, sans-serif",
+      "fontSize": 10
+    }
+  },
+  "foreground": "#30343F",
+  "foregroundNeutralSecondary": "#505668",
+  "backgroundLight": "#E6E9EF",
+  "foregroundNeutralTertiary": "#DADEE8",
+  "backgroundNeutral": "#EDEFF3",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [
+          {
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "show": true,
+            "radius": 8
+          }
+        ],
+        "visualHeader": [
+          {
+            "foreground": {
+              "solid": {
+                "color": "#505668"
+              }
+            }
+          }
+        ],
+        "visualTooltip": [
+          {
+            "themedTitleFontColor": {
+              "solid": {
+                "color": "#30343F"
+              }
+            },
+            "themedValueFontColor": {
+              "solid": {
+                "color": "#464C5C"
+              }
+            },
+            "actionFontColor": {
+              "solid": {
+                "color": "#505668"
+              }
+            }
+          }
+        ],
+        "visualHeaderTooltip": [
+          {
+            "themedTitleFontColor": {
+              "solid": {
+                "color": "#30343F"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#EDEFF3"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}

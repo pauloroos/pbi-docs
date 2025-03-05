@@ -1,0 +1,88 @@
+table tb_calculation_groups
+	lineageTag: 0ba71861-2207-4994-9ffd-cf34f894cd7e
+
+	column calculationGroup
+		dataType: string
+		lineageTag: a7eb7abf-a803-4020-92e9-4927fd26ea18
+		summarizeBy: none
+		sourceColumn: calculationGroup
+
+		annotation SummarizationSetBy = Automatic
+
+	column precedence
+		dataType: string
+		lineageTag: 413d29c0-234e-47f2-8024-976242943026
+		summarizeBy: none
+		sourceColumn: precedence
+
+		annotation SummarizationSetBy = Automatic
+
+	column calculationItem
+		dataType: string
+		lineageTag: 19996c6e-9911-474b-b648-6867d1f9cc01
+		summarizeBy: none
+		sourceColumn: calculationItem
+
+		annotation SummarizationSetBy = Automatic
+
+	column expression
+		dataType: string
+		lineageTag: 2939b115-eaf4-461d-b7e0-635e1502dde9
+		summarizeBy: none
+		sourceColumn: expression
+
+		annotation SummarizationSetBy = Automatic
+
+	column format
+		dataType: string
+		lineageTag: b599d0a8-a020-4526-9a52-c6e97bd33d33
+		summarizeBy: none
+		sourceColumn: format
+
+		annotation SummarizationSetBy = Automatic
+
+	column ordinal
+		dataType: string
+		lineageTag: cbc8fb5a-a8a7-4876-bd86-6965945e9c66
+		summarizeBy: none
+		sourceColumn: ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column ordinalColumn
+		dataType: string
+		lineageTag: 305d6d5a-b734-4fc1-95a9-62f27506c8b7
+		summarizeBy: none
+		sourceColumn: ordinalColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column tableKey
+		dataType: string
+		lineageTag: 9ebefd0f-0192-4d99-8d4f-f30ab8ac8821
+		summarizeBy: none
+		sourceColumn: tableKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_calculation_groups = m
+		mode: import
+		queryGroup: 'PBI DOC'
+		source =
+				let
+				    Source = Table.SelectRows(pbi_docs, each [Name] = "calculation_groups.csv")[[workspaceName], [reportName], [Content]],
+				    #"Csv to Table" = Table.TransformColumns(Source, {{"Content", each Table.PromoteHeaders(Csv.Document(_,[Delimiter=";", Encoding=1252]))}}),
+				    #"Expanded Content" = Table.ExpandTableColumn(#"Csv to Table", "Content", Table.ColumnNames(#"Csv to Table"[Content]{0})),
+				    #"Filtered Empy Rows" = Table.SelectRows(#"Expanded Content", each [calculationGroup] <> null and [calculationGroup] <> ""),
+				    #"All Columns to Text" = Table.TransformColumns(#"Filtered Empy Rows", {}, Text.From),
+				    #"Merged Queries" = Table.NestedJoin(#"All Columns to Text", {"workspaceName", "reportName"}, tb_reports, {"workspace", "name"}, "tb_reports", JoinKind.LeftOuter),
+				    #"Expanded tb_reports" = Table.ExpandTableColumn(#"Merged Queries", "tb_reports", {"datasetId"}, {"datasetId"}),
+				    #"Inserted tableKey" = Table.AddColumn(#"Expanded tb_reports", "tableKey", each Text.Combine({[datasetId], [calculationGroup]}, "|"), type text),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Inserted tableKey",{"tableKey", "calculationGroup", "precedence", "calculationItem", "expression", "format", "ordinal", "ordinalColumn"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
