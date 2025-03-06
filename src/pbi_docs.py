@@ -13,11 +13,15 @@ from docx.oxml.ns import nsdecls
 from datetime import datetime
 from pathlib import Path
 import re
+from dotenv import load_dotenv
+
+# Carregar variáveis do arquivo .env
+load_dotenv()
 
 # Crendentials
-tenant_id = os.getenv("FABRIC_TENANT_ID")
-client_id = os.getenv("FABRIC_CLIENT_ID")
-client_secret = os.getenv("FABRIC_CLIENT_SECRET")
+tenant_id = os.getenv("TENANT_ID")
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
 
 # Path DAX Studio CLI
 cmd = r"C:\Program Files\DAX Studio\dscmd.exe"
@@ -537,8 +541,9 @@ def get_pro_datasets(access_token):
 def get_info_pro_datasets(cmd, dax_query, ssas_dll, pbi_desktop):
     
     # Load SSAS assembly
-    clr.AddReference(ssas_dll)
-    from Microsoft.AnalysisServices import Server 
+    import clr
+    clr.AddReference(ssas_dll)   
+    from Microsoft.AnalysisServices import Server
 
     query = dax_query
 
