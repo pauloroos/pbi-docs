@@ -25,9 +25,11 @@ client_secret = os.getenv("CLIENT_SECRET")
 
 # Path DAX Studio CLI
 cmd = r"C:\Program Files\DAX Studio\dscmd.exe"
+# "C:\Program Files\DAX Studio\dscmd.exe"
 
 # Path Analysis Services
 ssas_dll = r"C:\Program Files\DAX Studio\bin\Microsoft.AnalysisServices.dll"
+# "C:\Program Files\DAX Studio\bin\Microsoft.AnalysisServices.dll"
 
 # Path Power BI Desktop
 pbi_desktop = r"C:\Program Files\WindowsApps\Microsoft.MicrosoftPowerBIDesktop_2.140.1205.0_x64__8wekyb3d8bbwe\bin\PBIDesktop.exe"
