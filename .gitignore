@@ -7,3 +7,6 @@
 **/results/documentation/
 **/results/exported_pbix/
 **/results/tenant_metadata/
+.env
+config.json
+secrets.yaml
